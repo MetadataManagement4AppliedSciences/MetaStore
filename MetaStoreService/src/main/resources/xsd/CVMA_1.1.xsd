@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017 Karlsruhe Institute of Technology 
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<xs:schema elementFormDefault="qualified" xmlns="https://lod.academy/cvma/ns/xmp/" targetNamespace="https://lod.academy/cvma/ns/xmp/" xmlns:Iptc4xmpExt="http://iptc.org/std/Iptc4xmpExt/2008-02-29/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:xmprights="http://ns.adobe.com/xap/1.0/rights/" xmlns:gps="http://www.topografix.com/GPX/1/1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://purl.org/dc/elements/1.1/" schemaLocation="http://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd"/>
+  <xs:import namespace="http://www.topografix.com/GPX/1/1" schemaLocation="http://www.topografix.com/GPX/1/1/gpx.xsd"/>
+  <xs:import namespace="http://iptc.org/std/Iptc4xmpExt/2008-02-29/"
+             schemaLocation="http://datamanager.kit.edu/masi/cvma/xsd/v1.1/CVMA_iptc_1.1.xsd"/>
+  <xs:import namespace="http://ns.adobe.com/xap/1.0/"
+             schemaLocation="http://datamanager.kit.edu/masi/cvma/xsd/v1.1/CVMA_xmp_1.1.xsd"/>
+  <xs:import namespace="http://ns.adobe.com/xap/1.0/rights/"
+             schemaLocation="http://datamanager.kit.edu/masi/cvma/xsd/v1.1/CVMA_xmpRights_1.1.xsd"/>
+  <xs:import namespace="http://ns.adobe.com/photoshop/1.0/"
+             schemaLocation="http://datamanager.kit.edu/masi/cvma/xsd/v1.1/CVMA_photoshop_1.1.xsd"/>
+  <xs:element name="cvma" type="cvmaRootType">
+    <xs:annotation>
+      <xs:documentation>
+        cvma is the root element in the XML file.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="cvmaRootType">
+    <xs:annotation>
+      <xs:documentation>Metadata 4 applied sciences. (MASi)</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" ref="dc:title">
+        <xs:annotation>
+          <xs:documentation>Beschreibender Titel des abgebildeten Werks bzw. der abgebildeten Scheibe.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element maxOccurs="11" minOccurs="0" name="Type" type="cvmaType">
+        <xs:annotation>
+          <xs:documentation>Gattung des dargestellten Werks in Hinblick auf Material und Technik der Darstellung.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="dc:relation">
+        <xs:annotation>
+          <xs:documentation>Eigenname des Fensters zu dem dieses Bild / diese Scheibe in Beziehung steht.</xs:documentation>
+          <xs:documentation>A list of related resources.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Volume" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Eindeutige Bezeichnung und Nummer des Bandes in der CVMA-Publikationsreihe, in dem das Bild publiziert ist; standardisierte alphanummerische Signatur.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Figure" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Abbildungsnummern im Band der CVMA-Publikationsreihe; arabische oder römische Ziffern mit den drei Präfixen „Taf.“, „Fig.“ oder „Abb.“.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="dc:identifier">
+        <xs:annotation>
+          <xs:documentation>Eindeutige Referenz der Datei / des Bildes / des Negativs.</xs:documentation>
+          <xs:documentation>An unambiguous reference to the resource within a given context. Recommended best practice is to identify the resource by means of a text conforming to a formal identification system.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="PhotographicType" type="cvmaPhotographicType">
+        <xs:annotation>
+          <xs:documentation>Fotografisches Verfahren am Objekt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="Iptc4xmpExt:DigitalSourceType">
+        <xs:annotation>
+          <xs:documentation>Herstellungsmethode der fotografischen Aufnahme.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="PhotographicContext" type="cvmaPhotographicContext">
+        <xs:annotation>
+          <xs:documentation>Situation der Erstellung der fotografischen Aufnahme.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="xmp:CreateDate">
+        <xs:annotation>
+          <xs:documentation>Datum der Herstellung der Fotografie, im Unterschied zum Herstellungsdatum des dargestellten Objekts.</xs:documentation>
+          <xs:documentation>The date and time the resource was created. For a digital file, this need not match a file-system creation time.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="Iptc4xmpExt:WorldRegion">
+        <xs:annotation>
+          <xs:documentation>Name eines Kontinents/einer Weltregion. Dieses Element ist auf der obersten/ersten Ebene einer geographischen Hierarchie angesiedelt.</xs:documentation>
+          <xs:documentation>The name of a world region of a location. This element is at the first (topI) level of a top-down geographical hierarchy.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="Iptc4xmpExt:CountryName">
+        <xs:annotation>
+          <xs:documentation>Name eines Staats/eines Landes. Dieses Element ist auf der zweiten Ebene einer geographischen Hierarchie angesiedelt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="Iptc4xmpExt:ProvinceState">
+        <xs:annotation>
+          <xs:documentation>Name einer Region/einer untergeordneten Verwaltungseinheit eines Staats. Dieses Element ist auf der dritten Ebene einer geographischen Hierarchie angesiedelt.</xs:documentation>
+          <xs:documentation>The name of a subregion of a country - a province or state - of a location. This element is at the third level of a top-down geographical hierarchy.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="Iptc4xmpExt:City">
+        <xs:annotation>
+          <xs:documentation>Name einer Stadt/Ortschaft mit Eigennamen. Dieses Element ist auf der vierten Ebene einer geographischen Hierarchie angesiedelt.</xs:documentation>
+          <xs:documentation>Name of the city of a location. This element is at the fourth level of a top-down geographical hierarchy.</xs:documentation>
+          <xs:documentation>Für die Schreibweise der deutschen Ortsnamen wird DEHIO verwendet. Historische Ortsnamen werden beibehalten, auf den Zusatz Bad wird verzichtet. Ausländische Ortsnamen werden in der offiziellen deutschen Schreibweise verwendet.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="Iptc4xmpExt:Sublocation">
+        <xs:annotation>
+          <xs:documentation>Name eines Bauwerks/Gebäudekomplexes, entweder als Untereinheit einer Stadt/Ortschaft oder als bekanntes solitäres Monument außerhalb einer Stadt. Dieses Element ist auf der fünften Ebene einer geographischen Hierarchie angesiedelt. Sofern bekannt Nennung des Patrozinium einer Kirche.</xs:documentation>
+          <xs:documentation>Name of a sublocation. This sublocation name could either be the name of a sublocation to a city or the name of a well known location or (natural) monument outside a city. In the sense of a sublocation to a city this element is at the fifth level of a top-down geographical hierarchy.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="PartOfBuilding" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Name eines Bauteils als Untereinheit eines Bauwerks oder eines Gebäudekomplexes. Dieses Element ist auf der sechsten Ebene einer geographischen Hierarchie angesiedelt. Sofern bekannt Nennung des Patrozinium einer Kapelle oder Eigennamen eines Raumes.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="GPSLatitude" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Breitengrad des Gebäudes.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="GPSLongitude" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Längengrad des Gebäudes.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="Iptc4xmpExt:LocationId">
+        <xs:annotation>
+          <xs:documentation>Weltweit eindeutiger geographischer Identifikator (URI) des Gebäudes (Geonames).</xs:documentation>
+          <xs:documentation>Globally unique identifier of the location.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Direction" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Himmelsrichtung des Fensters nach CVMA-Notation: Kleinschreibung bei Fensterplätzen der unteren Ebene, ebenso mit Zusatz für Zwischenzonen (Triforien, Emporen); Großschreibung bei Fensterplätzen im Obergaden usw..</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Pane" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Nummerierung der Fenster einer Himmelsrichtung an einem Gebäudeteil nach CVMA-Richtlinien; aufsteigende römische Ziffern beginnend mit II zu beiden Seiten des standardmäßig mit „I“ bezeichneten Chorachsenfensters bzw. des mit H I bezeichneten Achsenfensters im Chorobergaden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Row" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Bezeichnung der horizontalen Zeile des Fensters, in der sich die Scheibe befindet; numerische Zählung, von unten nach oben fortlaufend, beginnend mit 1. Für mehrere Zeilen übergreifende Abbildungen wird die Spanne von-bis mit Bindestrich ohne Leerzeichen angegeben. Bei Gesamtaufnahmen wird auf die Angabe der Zeilen verzichtet.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="Column" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Bezeichnung der vertikalen Bahn (Lanzette) des Fensters, in der sich die Scheibe befindet; kleine lateinische Buchstaben beginnend links mit a. Für mehrere Bahnen übergreifende Abbildungen wird die Spanne von-bis mit Bindestrich ohne Leerzeichen angegeben. Im Maßwerkcouronnement bezeichnen entsprechende Großbuchstaben die Bahn über der sich das Feld befindet. Bei Gesamtaufnahmen wird auf die Angabe der Bahnen verzichtet.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="FormerLocation" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Ehemaliger/ursprünglicher Standort. Standortwechsel von Scheiben innerhalb eines Bauwerks bzw. Positionswechsel innerhalb eines Fensters werden nicht abgebildet. Mehrfachnennungen bei komplizierteren Provenienzen abgetrennt durch Semikolon; beginnend beim ursprünglichen Standort.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FormerLocationIds" type="xs:anyURI">
+        <xs:annotation>
+          <xs:documentation>Geographische(r) Identifikator(en) für ursprüngliche(n) bzw. ehemalige(n) Standort(e). Die Identifikatoren-URIs basieren auf der Geonames-Konkordanz der CVMA Standorte.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="ObjectHeight" type="xs:decimal">
+        <xs:annotation>
+          <xs:documentation>Maß der maximalen vertikalen Ausdehnung des Objekts in Zentimeter als Kommazahl. Bei Montagen mehrerer Objekte ungefähre durchschnittliche Größe, bei Teilaufnahmen weglassen, bei Gesamtaufnahmen Gesamtmaß des Fensters angeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="ObjectWidth" type="xs:decimal">
+        <xs:annotation>
+          <xs:documentation>Maß der maximalen horizontalen Ausdehnung des Objekts in Zentimeter als Kommazahl. Bei Montagen mehrerer Objekte ungefähre durchschnittliche Größe, bei Teilaufnahmen weglassen, bei Gesamtaufnahmen Gesamtmaß des Fensters angeben.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="ObjectDiameter" type="xs:decimal">
+        <xs:annotation>
+          <xs:documentation>Durchmesser des Objektes in Zentimeter. Bei Montagen durchschnittlicher Durchmesser.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="Iptc4xmpExt:AOCircaDateCreated">
+        <xs:annotation>
+          <xs:documentation>Annäherndes Datum bzw. Zeitraum in dem das abgebildete Werk oder wesentliche Teile davon geschaffen wurden.</xs:documentation>
+          <xs:documentation>Approximate date or range of dates associated with the creation and production of an artwork or object or its components.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="AgeDeterminationStart" type="severalDates">
+        <xs:annotation>
+          <xs:documentation>Beginn eines Entstehungszeitraums nach ISO-Schema. Sofern ein Normdatum (Anfang) gesetzt wird, muss auch ein Normdatum (Ende) gesetzt werden. Im Fall eines einzigen Jahres wird das Normdatum (Anfang) auf den 1. Januar, das Normdatum (Ende) auf den 31. Dezember des gleichen Jahres gesetzt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="AgeDeterminationEnd" type="severalDates">
+        <xs:annotation>
+          <xs:documentation>Ende eines Entstehungszeitraums nach ISO-Schema. Sofern ein Normdatum (Anfang) gesetzt wird, muss auch das Normdatum (Ende) gesetzt werden. Im Fall eines Jahres wird das Normdatum (Anfang) auf den 1. Januar, das Normdatum (Ende) auf den 31. Dezember gesetzt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="RestorationHistory" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Informationen zur Restaurierung des abgebildeten Objektes als Freitext.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="EntityName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Name der Person oder Körperschaft (wenn möglich die bevorzugte Namenansetzung gemäß dem verwendetem Normdatensystem).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="EntityIdentifier" type="xs:anyURI">
+        <xs:annotation>
+          <xs:documentation>Weltweit eindeutiger Identifikator für die Person oder Körperschaft aus einem Normdatensystem (GND).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="EntityRole" type="cvmaEntityRole">
+        <xs:annotation>
+          <xs:documentation>Rolle/Funktion der erfassten Person/Körperschaft in Bezug zum abgebildeten Objekt.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="IconclassNotation" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Alphanummerische Notation aus der Klassifikation www.iconclass.org zur Beschreibung der im Werk dargestellten Ikonographie.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="IconclassDescription" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Beschreibender Text entsprechend der Iconclass-Klassifikation.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="xmprights:Marked">
+        <xs:annotation>
+          <xs:documentation>Wenn zutreffend, dann handelt es sich um ein urheberrechtlich geschütztes Werk; wenn unzutreffend, dann handelt es sich um ein gemeinfreies Werk; kein Eintrag wenn der Rechtestatus unbekannt ist.</xs:documentation>
+          <xs:documentation>When true, indicates that this is a rights-managed resource. When false, indicates that this is a public-domain resource. Omit if the state is unknown.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="dc:creator">
+        <xs:annotation>
+          <xs:documentation>Eine Person oder Körperschaft, die für die Erstellung der Fotografie verantwortlich war, i.d.R. Fotografen bzw. Fotoagenturen, (mehrere Namen werden mit Komma getrennt).</xs:documentation>
+          <xs:documentation>An entity primarily responsible for making the resource.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="xmprights:Owner">
+        <xs:annotation>
+          <xs:documentation>Inhaber der Rechte an der Fotografie, Person oder Körperschaft, der die Verwertungsrechte besitzt (Institution, z.B. Verlag oder Bibliothek bzw. Person).</xs:documentation>
+          <xs:documentation>A list of legal owners of the resource.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="dc:publisher">
+        <xs:annotation>
+          <xs:documentation>Herausgeber der Fotografie, id. R. eine der beiden CVMA Arbeitsstellen.</xs:documentation>
+          <xs:documentation>A list of publishers.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="photoshop:Credit">
+        <xs:annotation>
+          <xs:documentation>Vom Rechteinhaber vorgegebene Ansetzungsform des Bildnachweises in Publikationen; Quellennachweis, mehrere Sprachen möglich; für die Angabe von Literatur werden die Zitationsrichtlinien des CVMA verwendet.</xs:documentation>
+          <xs:documentation>The credit to person(s) and/or organisation(s) required by the supplier of the item to be used when published.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="xmprights:UsageTerms">
+        <xs:annotation>
+          <xs:documentation>Angabe einer Lizenz, unter der das Werk zur weiteren Nutzung zur Verfügung gestellt wird.</xs:documentation>
+          <xs:documentation>A collection of text instructions on how a resource can be legally used, given in a variety of languages.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="xmprights:WebStatement">
+        <xs:annotation>
+          <xs:documentation>Internet-URL zum Aufruf des kompletten Lizenztextes.</xs:documentation>
+          <xs:documentation>A Web URL for a statement of the ownership and usage rights for this resource.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="PublishingStatus" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Wenn wahr, dann ist das Objekt/Bild für die öffentliche Publikation freigegeben, z.B. auf den Internetseiten. Wenn falsch, dann ist das Bild nur für den internen Arbeitsgebrauch der Arbeitsstelle freigegeben und darf nicht veröffentlicht werden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" ref="photoshop:Instructions">
+        <xs:annotation>
+          <xs:documentation>Freitextfeld zur Aufnahme von Hinweisen und Bemerkungen zur vorliegenden Fotografie.</xs:documentation>
+          <xs:documentation>Any of a number of instructions from the provider or creator to the receiver of the item.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <!-- Enumerations are defined below -->
+  <xs:simpleType name="cvmaType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Glasmalerei"/>
+      <xs:enumeration value="Buchmalerei"/>
+      <xs:enumeration value="Tafelmalerei"/>
+      <xs:enumeration value="Wandmalerei"/>
+      <xs:enumeration value="Architektur"/>
+      <xs:enumeration value="Skulptur"/>
+      <xs:enumeration value="Zeichnung"/>
+      <xs:enumeration value="Druckgraphik"/>
+      <xs:enumeration value="Textilwerk"/>
+      <xs:enumeration value="Bauornamentik"/>
+      <xs:enumeration value="Metallwerk"/>
+    </xs:restriction>
+  </xs:simpleType> 
+  <xs:simpleType name="cvmaPhotographicType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Durchlicht"/>
+      <xs:enumeration value="Durchlicht Vorderseite Einzelaufnahme"/>
+      <xs:enumeration value="Durchlicht Vorderseite Gesamtaufnahme"/>
+      <xs:enumeration value="Durchlicht Vorderseite Detailnahme"/>
+      <xs:enumeration value="Auflicht"/>
+      <xs:enumeration value="Auflicht Vorderseite"/>
+      <xs:enumeration value="Auflicht Vorderseite Einzelaufnahme"/>
+      <xs:enumeration value="Auflicht Vorderseite Gesamtaufnahme"/>
+      <xs:enumeration value="Auflicht Vorderseite Detailaufnahme"/>
+      <xs:enumeration value="Auflicht Rückseite"/>
+      <xs:enumeration value="Auflicht Rückseite Einzelaufnahme"/>
+      <xs:enumeration value="Auflicht Rückseite Gesamtaufnahme"/>
+      <xs:enumeration value="Auflicht Rückseite Detailaufnahme"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cvmaPhotographicContext">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="in situ"/>
+      <xs:enumeration value="ausgebaut"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cvmaEntityRole">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Stifter"/>
+      <xs:enumeration value="Entwerfer"/>
+      <xs:enumeration value="Werkstatt"/>
+      <xs:enumeration value="Restaurator"/>
+    </xs:restriction>
+  </xs:simpleType>
+    <xs:simpleType name="severalDates">
+      <xs:union memberTypes="xs:gYear xs:gYearMonth xs:date xs:dateTime" />
+    </xs:simpleType>
+
+</xs:schema>

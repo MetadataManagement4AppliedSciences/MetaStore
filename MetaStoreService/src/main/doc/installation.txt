@@ -1,0 +1,111 @@
+MetaStore
+=========
+Contact <support@datamanager.kit.edu>
+:toc: left
+:toclevels: 3
+:iconsdir: ./icons
+:icons: font
+:max-width: 90em
+:author:    KIT Data Manager Dev Team
+:email:     support@datamanager.kit.edu
+:revdate:   ${datestamp}
+:revnumber: ${project.version}
+:website: http://datamanager.kit.edu/index.php/kit-data-manager
+
+.Preliminary Remarks
+**********************************************************************
+If you are struggling with the terms
+
+- KIT Data Manager
+- Repository
+- Digital Object
+
+please read the documentation of the http://datamanager.kit.edu/dama/manual/[KIT Data Manager] first.
+**********************************************************************
+
+== Installation of ${artifactId} 
+
+.Requirements
+**********************************************************************
+. ArangoDB 3.1 or higher
+. JDK 1.8
+. KIT Data Manager 1.5 or higher
+**********************************************************************
+
+=== About this documentation
+This documentation gives a brief overview about the installation of
+the MetaStore as a part of a repository powered by KIT Data Manager.
+It 
+
+
+=== Documentation of the module \'${artifactId}'
+The module \'*_${artifactId}_*' provides a REST-API to register XSD, store metadata
+available in XML format, validate XML, search for metadata, and creating a PID for
+publishing and referencing digital objects.
+In first version it extends the REST-API of KIT Data Manager. The MetaStore could 
+also be utilized as a standalone service.
+
+=== Installation
+include::arangodb.txt[]
+
+=== Installation MetaStore
+1. Install ${artifactId} module as part of KIT Data Manager.
+A. Unzip _'${artifactId}-${project.version}-kitdm.zip'_ at *_'KITDM_LOCATION'_*. 
+B. Remove MDM-Content-1.5.jar from KITDM/WEB-INF/lib directory
+C. Create hard links of all jar files to lib directory
+a. Type 'ln KITDM/WEB-INF/lib/${libFolder}/*.jar KITDM/WEB-INF/lib'
+D. Fill in the ArangoDB database settings at KITDM/WEB-INF/classes/DatabaseProperties.properties.
+E. Adapt KITDM/WEB-INF/web.xml
+a. Insert the sections 'listener' and 'context-param' for the initialization of the MetaStore from web_metastore.xml into web.xml
+b. Copy all default XSD files of the metadata schema you want to add to KITDM/WEB-INF/classes/xsd (OPTIONAL).
+* Accordingly, adapt/extend context-param initMetaStore (comma separated list with prefix:filename)
+F. Insert the sections 'servlet' and 'servlet-mapping' from web_metastore.xml into web.xml
+G. Insert section 'module' from KITDM/WEB-INF/classes/datamanager_EPIC.xml into KITDM/WEB-INF/classes/datamanager.xml
+a. Adapt the settings of the added section to configure the fetching of DOIs via ePIC/handle.
+H. Insert marked line from KITDM/WEB-INF/classes/META-INF/persistence_pid.xml into KITDM/WEB-INF/classes/META-INF/persistence.xml
+I. To avoid access problems make all file accessible by tomcat (e.g.: chown -R tomcat7:tomcat7 *_'KITDM_LOCATION'_*)
+J. Check and/or adapt database content:
+[source,sh]
+--------------------------------------
+/home/kitdm$sudo -u postgres psql -d datamanager
+[sudo] password for kitdm: 
+psql (9.5.5)
+Type "help" for help.
+
+datamanager=# select * from metadataschema;
+ id |                           metadataschemaurl        | schemaidentifier |                    namespace                     
+----+----------------------------------------------------+------------------+--------------------------------------------------
+  1 |                                                    | bmd              | http://datamanager.kit.edu/dama/basemetadata
+  2 |                                                    | do               | http://datamanager.kit.edu/dama/dataorganization
+  3 | http://www.loc.gov/standards/mets/mets.xsd         | mets             | http://www.loc.gov/METS/
+  4 | http://www.openarchives.org/OAI/2.0/oai_dc.xsd     | oai_dc           | http://www.openarchives.org/OAI/2.0/oai_dc/
+  5 | http://www.corpusvitrearum.de/cvma/1.1/            | cvma             | https://lod.academy/cvma/ns/xmp/
+  6 |                                                    | chem             | http://datamanager.kit.edu/masi/chem/1.0
+(6 rows)
+--------------------------------------
+
+If there is already a schemaidentifier 'bmd' defined with a trailing '/' in the 
+namespace this has to be updated like this:
+
+[source,sh]
+--------------------------------------
+datamanager=# update metadataschema set schemaidentifier='bmd_old' where schemaidentifier='bmd';
+UPDATE 1
+--------------------------------------
+
+Also check the schemaidentifier 'dc'. The namespace of this schema may not be equal
+to the one defined by 'oai_dc'. (This may happen if KIT Data Manager is updated
+from an older version)
+Otherwise the schemaidentifier has to be changed:
+
+[source,sh]
+--------------------------------------
+datamanager=# update metadataschema set schemaidentifier='oai_dc' where schemaidentifier='dc';
+UPDATE 1
+--------------------------------------
+[start=2]
+2. Restart tomcat
+
+That's it. Please install and configure the additional metadata extractors needed.
+(MDM-MasiProcessors and/or MDM-CVMA)
+

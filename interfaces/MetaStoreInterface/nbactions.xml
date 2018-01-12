@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>run</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-classpath %classpath edu.kit.masi.metastore.TestServices /tmp/metastore/mets.xsd /tmp/metastore/mets.xml id1 /tmp/metastore/chem.xsd /tmp/metastore/mets2.xml id2 /tmp/metastore/masi.xsd</exec.args>
+                <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+        <action>
+            <actionName>debug</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath edu.kit.masi.metastore.TestServices /tmp/metastore/mets.xsd /tmp/metastore/mets.xml id1 /tmp/metastore/chem.xsd /tmp/metastore/mets2.xml id2 /tmp/metastore/masi.xsd</exec.args>
+                <exec.executable>java</exec.executable>
+                <jpda.listen>true</jpda.listen>
+            </properties>
+        </action>
+        <action>
+            <actionName>profile</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-classpath %classpath edu.kit.masi.metastore.TestServices /tmp/metastore/mets.xsd /tmp/metastore/mets.xml id1 /tmp/metastore/chem.xsd /tmp/metastore/mets2.xml id2 /tmp/metastore/masi.xsd</exec.args>
+                <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+        <action>
+            <actionName>CUSTOM-clean release</actionName>
+            <displayName>clean release</displayName>
+            <goals>
+                <goal>release:clean</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-PrepareTest</actionName>
+            <displayName>prepareReleaseTest</displayName>
+            <goals>
+                <goal>release:prepare</goal>
+            </goals>
+            <properties>
+                <dryRun>true</dryRun>
+            </properties>
+        </action>
+        <action>
+            <actionName>CUSTOM-ReleasePrepare</actionName>
+            <displayName>prepareRelease</displayName>
+            <goals>
+                <goal>release:prepare</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-performRelease</actionName>
+            <displayName>performRelease</displayName>
+            <goals>
+                <goal>release:perform</goal>
+            </goals>
+        </action>
+    </actions>

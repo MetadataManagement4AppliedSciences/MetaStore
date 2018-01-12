@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+  <action>
+    <actionName>CUSTOM-Build zip</actionName>
+    <displayName>Build zip</displayName>
+    <goals>
+      <goal>assembly:assembly</goal>
+    </goals>
+  </action>
+  <action>
+    <actionName>CUSTOM-Build docker zip</actionName>
+    <displayName>Build docker zip</displayName>
+    <goals>
+      <goal>assembly:assembly</goal>
+    </goals>
+    <properties>
+      <groupId>docker</groupId>
+    </properties>
+  </action>
+  <action>
+    <actionName>CUSTOM-clean release</actionName>
+    <displayName>clean release</displayName>
+    <goals>
+      <goal>release:clean</goal>
+    </goals>
+  </action>
+  <action>
+    <actionName>CUSTOM-PrepareTest</actionName>
+    <displayName>prepareReleaseTest</displayName>
+    <goals>
+      <goal>release:prepare</goal>
+    </goals>
+    <properties>
+      <dryRun>true</dryRun>
+    </properties>
+  </action>
+  <action>
+    <actionName>CUSTOM-ReleasePrepare</actionName>
+    <displayName>prepareRelease</displayName>
+    <goals>
+      <goal>release:prepare</goal>
+    </goals>
+  </action>
+  <action>
+    <actionName>CUSTOM-performRelease</actionName>
+    <displayName>performRelease</displayName>
+    <goals>
+      <goal>release:perform</goal>
+    </goals>
+  </action>
+</actions>

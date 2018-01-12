@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017 Karlsruhe Institute of Technology 
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+     <groupId>edu.kit.masi</groupId>
+     <artifactId>plugins</artifactId>
+     <version>1.3</version>
+     <relativePath>../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>edu.kit.masi.plugin</groupId>
+  <artifactId>MasiServicePlugin</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>edu.kit.dama</groupId>
+      <artifactId>Commons</artifactId>
+      <version>1.5</version>
+    </dependency>
+  </dependencies>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <firstName>Volker</firstName>
+     <lastName>Hartmann</lastName>
+     <nameId>hartmann-v</nameId>
+     <root.relative.path>../../</root.relative.path>  
+  </properties>
+
+  <developers>
+    <developer>
+      <id>${nameId}</id>
+      <name>${firstName} ${lastName}</name>
+      <email>${firstName}.${lastName}@kit.edu</email>
+      <organization>Karlsruhe Institute of Technology (KIT)</organization>
+      <roles>
+        <role>Project manager</role>
+      </roles>
+      <timezone>1</timezone>
+    </developer>
+  </developers>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.4</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.19.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.17</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>checkstyle</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+      </plugin>
+    </plugins>
+  </reporting>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <executions>
+          <execution>
+            <id>output-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputDirectory>${project.build.directory}/site/doc</outputDirectory>
+          <sourceDirectory>src/main/doc/</sourceDirectory>
+          <sourceDocumentName>documentation.txt</sourceDocumentName>
+          <sourceHighlighter>highlightjs</sourceHighlighter>
+          <backend>html5</backend>
+          <attributes>
+            <!--stylesheet>flask.css</stylesheet-->
+          </attributes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

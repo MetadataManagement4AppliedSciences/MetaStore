@@ -1,0 +1,100 @@
+= Setup Project developing (new) Service Plugins
+
+The extension mechanism of JAVA allows you to extend functionality without modifying
+code base. This is done via plugins/modules which have to implement a given
+interface. For further information please refer to 
+https://docs.oracle.com/javase/tutorial/ext/basics/spi.html[Creating Extensible Applications]
+
+== Remark
+To enable documentation inside your projects you have to include the following 
+plugin to your pom.xml:
+--------------------------------------
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <executions>
+          <execution>
+            <id>output-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputDirectory>${project.build.directory}/doc</outputDirectory>
+          <sourceDirectory>src/main/doc/</sourceDirectory>
+          <sourceDocumentName>documentation.txt</sourceDocumentName>
+          <sourceHighlighter>highlightjs</sourceHighlighter>
+          <backend>html5</backend>
+          <attributes>
+            <!--stylesheet>flask.css</stylesheet-->
+          </attributes>
+        </configuration>
+      </plugin>
+--------------------------------------
+
+== Workflow
+=== Define Interface 
+If the interface is not already available an interface has to be defined.
+The interface should be inherited from the IServicePlugin. The interface 
+has to define all services which should be supported by the plugins/modules.
+For a better separation this interface should be located in an own project.
+If there should be default settings defined in datamanager.xml please define
+one or more constants defining 'path' to the settings. It's recommended to use
+'modules' as prefix. 
+(e.g.: "modules.myInterface.name" and "modules.myinterface.version")
+[NOTE]
+The project should include a complete javadoc and asciidoc as documentation.
+
+=== Implement Interface
+Create a new project with dependency to project defining interface.
+Implement a class extending AbstractServicePlugin and implementing previously
+defined interface.
+
+=== Register new plugin
+To register a new plugin the pom.xml has to be prepared like the following:
+--------------------------------------
+      <plugin>
+        <groupId>eu.somatik.serviceloader-maven-plugin</groupId>
+        <artifactId>serviceloader-maven-plugin</artifactId>
+        <version>1.0.7</version>
+        <configuration>
+          <services>
+            <param>add implemented service interface here</param>
+          </services>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+--------------------------------------
+ 
+That's it. Now you may add the jar file in the lib directory and restart 
+KIT Data Manager.
+
+=== Using new plugin
+For using installed plugins the code should look like this:
+--------------------------------------
+    MyInterface selectedPlugin = null;
+    // Read default plugin if defined in datamanager.xml
+    String implementationName    = DataManagerSettings.getSingleton().getStringProperty(MyInterface.NAME, null);
+    String implementationVersion = DataManagerSettings.getSingleton().getStringProperty(MyInterface.VERSION, null);
+
+    for (MyInterface plugin : ServiceLoader.load(MyInterface.class)) {
+      String name = plugin.getName();
+      String version = plugin.getVersion();
+      LOGGER.info(name);
+      LOGGER.info(version);
+      if (name.equals(implementationName) && version.equals(implementationVersion)) {
+         selectedPlugin = plugin;
+         break;
+      }
+    }
+    // use selected plugin...
+--------------------------------------

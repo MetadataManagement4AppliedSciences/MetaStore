@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--
+Copyright 2017 Karlsruhe Institute of Technology.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+  <head>
+    <title>MetaStore ${project.version} </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      h1 {
+        text-align: center;
+      }
+
+      h3 {
+        text-align: center;
+      }   
+    </style>
+  </head>
+  <body>
+    <h1>Metastore </h1>
+    <h3>Version: ${project.version}</h3>
+    <h3>Date: ${datestamp}</h3>
+    This is the core module for using metastore via REST.
+    It provides the basic functionality of MASi which is usable for 
+    all communities without any changes. For special/additional functionality
+    extensions may be available. (e.g.: Fuzzy search/Facets, provenance,...)
+    <h2>Link to REST documentation</h2>
+    <a href="swagger/index.html">Documentation of Metastore REST API</a>
+  </body>
+</html>

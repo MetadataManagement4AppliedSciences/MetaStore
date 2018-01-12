@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017 Karlsruhe Institute of Technology 
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+     <groupId>edu.kit.masi</groupId>
+     <artifactId>masi</artifactId>
+     <version>1.3</version>
+     <relativePath>../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>edu.kit.masi.rest</groupId>
+  <artifactId>MetaStoreService</artifactId>
+  <packaging>jar</packaging>
+  <version>1.3</version>
+  <name>MetaStoreService</name>
+  <url>http://maven.apache.org</url>
+  <description>MetaStore REST API for ingesting/accessing metadata in a repository 
+    managed by MASi/KIT Data Manager. It also supports a rudimentary interface for 
+    searching and validating metadata. It now also supports creating of an PID and
+    adding new attributes to them. </description>
+
+  <properties>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <firstName>Volker</firstName>
+     <lastName>Hartmann</lastName>
+     <nameId>hartmann-v</nameId>
+     <root.relative.path>../</root.relative.path>  
+     <group>kitdm</group>
+     <libFolder>MASi/MetaStore</libFolder>
+  </properties>
+
+  <developers>
+    <developer>
+      <id>${nameId}</id>
+      <name>${firstName} ${lastName}</name>
+      <email>${firstName}.${lastName}@kit.edu</email>
+      <organization>Karlsruhe Institute of Technology (KIT)</organization>
+      <roles>
+        <role>Project manager</role>
+      </roles>
+      <timezone>1</timezone>
+    </developer>
+    <developer>
+      <id>sakharkar</id>
+      <name>Vaibhav Sakharkar</name>
+      <email>vaibhav.sakharkar@kit.edu</email>
+      <organization>Karlsruhe Institute of Technology (KIT)</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>1</timezone>
+    </developer>
+  </developers>
+ 
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey.contribs</groupId>
+      <artifactId>jersey-multipart</artifactId>
+      <version>1.19</version>
+    </dependency>    
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <version>3.0.0</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>edu.kit.dama</groupId>
+      <artifactId>MDM-BaseMetaData</artifactId>
+      <version>1.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-jaxrs</artifactId>
+      <version>1.5.12</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>joda-time</groupId>
+          <artifactId>joda-time</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.dataformat</groupId>
+          <artifactId>jackson-dataformat-yaml</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.jaxrs</groupId>
+          <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.module</groupId>
+          <artifactId>jackson-module-jaxb-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+       
+    <dependency>
+      <groupId>edu.kit.dama.rest</groupId>
+      <artifactId>ServiceBase</artifactId>
+      <version>1.5</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>edu.kit.masi</groupId>
+      <artifactId>MetaStore</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
+      <groupId>edu.kit.dama</groupId>
+      <artifactId>MDM-Content</artifactId>
+      <version>1.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>edu.kit.masi.plugin.pid</groupId>
+      <artifactId>EpicPlugin</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>edu.kit.masi.plugin.index</groupId>
+      <artifactId>ElasticsearchIndexPlugin</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>edu.kit.masi.plugin.search</groupId>
+      <artifactId>ElasticsearchPlugin</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>MetaStoreService</finalName>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>2.6</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.0.2</version>
+        <configuration>
+          <excludes>
+            <exclude>xsd/*</exclude>
+            <exclude>DatabaseProperties.properties</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <warSourceDirectory>WebContent</warSourceDirectory>
+          <failOnMissingWebXml>true</failOnMissingWebXml>
+          <webResources>
+            <resource>
+              <directory>WebContent</directory>
+              <!-- it's not a good idea to filter binary files -->
+              <filtering>false</filtering>
+              <excludes>
+                <exclude>**/*.html</exclude>
+              </excludes>
+            </resource>
+            <resource>
+              <directory>WebContent</directory>
+              <!-- enable filtering -->
+              <filtering>true</filtering>
+              <includes>
+                <include>**/*.html</include>
+              </includes>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+ 
+      <plugin>
+        <groupId>com.github.kongchen</groupId>
+        <artifactId>swagger-maven-plugin</artifactId>
+        <version>3.1.4</version>
+        <configuration>
+          <apiSources>
+            <apiSource>
+              <springmvc>false</springmvc>
+              <locations>edu.kit.masi.rest.service</locations>
+              <schemes>http,https</schemes>
+              <host>localhost:8089</host>
+              <basePath>/KITDM/rest/metastore</basePath>
+              <info>
+                <title>Swagger spec for MetaStore REST API </title>
+                <version>${project.version}</version>
+                <description>This is the specification of the MetaStore REST API. 
+                  For authentication the REST authentication provided by KIT Data
+                  Manager is used. The RESTAPI provides the basic functionality of MASi 
+                  (registration of XML Schema Definitions, creation (automatically
+                  triggered during ingest to repository)/update/validation of metadata,
+                  search for digital objects via metadata, creating and editing PID
+                  for an existing digital object. These services are usable for 
+                  all communities without any changes. For special/additional functionality
+                  additional services may be available as an upgrade in future (e.g.: Fuzzy search/Facets, provenance,...).
+                </description>
+                <!--termsOfService>
+                    http://www.testcompany.com/terms-and-conditions
+                </termsOfService-->
+                <contact>
+                  <email>webmaster(@)datamanager.kit.edu</email>
+                  <name>Volker Hartmann</name>
+                  <url>http://datamanager.kit.edu</url>
+                </contact>
+                <license>
+                  <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+                  <name>Apache Licence 2.0</name>
+                </license>
+              </info>
+              <swaggerDirectory>WebContent/metastore/swagger</swaggerDirectory>
+            </apiSource>
+          </apiSources>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${endorsed.dir}</outputDirectory>
+              <silent>true</silent>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>javax</groupId>
+                  <artifactId>javaee-endorsed-api</artifactId>
+                  <version>6.0</version>
+                  <type>jar</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>        
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <executions>
+          <execution>
+            <id>output-html</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputDirectory>${project.build.directory}/doc</outputDirectory>
+          <sourceDirectory>src/main/doc/</sourceDirectory>
+          <sourceDocumentName>installation.txt</sourceDocumentName>
+          <sourceHighlighter>highlightjs</sourceHighlighter>
+          <backend>html5</backend>
+          <attributes>
+            <!--stylesheet>flask.css</stylesheet-->
+          </attributes>
+        </configuration>
+      </plugin>
+      <!-- *********************************************************
+      ***  Plugin for creating distribution of your application. ***
+      ***  Filters should be placed in                           ***
+      ***  ${basedir}/src/main/assemble/                         ***
+      **************************************************************  -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <filters>
+            <!-- Format of the filters are conform to property files.
+            (e.g.: key=value  will replace all ${key} with 'value' -->
+            <filter>${basedir}/src/main/assemble/filter.${group}.properties</filter>
+          </filters>
+          <descriptors>
+            <descriptor>${basedir}/src/main/assemble/distribution.xml</descriptor>
+          </descriptors>
+          <outputDirectory>${basedir}/zip</outputDirectory>
+          <finalName>${project.artifactId}-${project.version}-${group}</finalName>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <scm>
+    <developerConnection>scm:svn:svn+ssh://ipepc21.ka.fzk.de/srv/svn/KDM_EXT/trunk/MASi/MetaStoreService</developerConnection>
+    <url>http://ipepc21.ka.fzk.de/viewcvs/KDM_EXT/trunk/MASi/MetaStoreService/</url>
+  </scm>
+ 
+</project>

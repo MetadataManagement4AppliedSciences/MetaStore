@@ -1,0 +1,7 @@
+==== Installation of ArangoDB
+An example of installing ArangoDB on an Ubuntu operating system you'll find here:
+https://www.arangodb.com/download-major/ubuntu/[Installing ArangoDB on Ubuntu]
+
+In the last step you have to provide a password for the database. Please note this
+password. If no additional user will be created you may access the database via
+username 'root' and the provided password.

@@ -1,0 +1,55 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+		 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+  <display-name>MetaStore</display-name>
+ 
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <!-- MetaStore initialization via a listener -->
+<listener>
+    <listener-class>
+    edu.kit.masi.metastore.init.InitializeMetaStore
+    </listener-class>
+</listener>  
+ <context-param>
+    <param-name>initMetaStore</param-name>
+    <param-value>
+      mets:mets.xsd,
+      bmd:bmd.xsd,
+      do:dataorganization.xsd,
+      oai_dc:oai_dc.xsd,
+      chem:chem.xsd,
+      cvma:CVMA_1.1.xsd
+      tika:tika_1.0.xsd
+    </param-value>
+  </context-param>
+ 
+    <!--MetaStore interface-->
+  <servlet>
+    <servlet-name>metastore</servlet-name>
+    <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>com.sun.jersey.config.property.packages</param-name>
+      <param-value>edu.kit.masi.rest.service</param-value> <!--;edu.kit.masi.rest.security.impl</param-value-->
+    </init-param>
+    <!--init-param>
+        <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+        <param-value>edu.kit.masi.rest.security.impl.PoweredByResponseFilter</param-value>
+    </init-param-->	
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+ 
+  <servlet-mapping>
+    <servlet-name>metastore</servlet-name>
+    <url-pattern>/rest/metastore/*</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
