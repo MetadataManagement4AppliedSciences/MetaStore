@@ -47,7 +47,7 @@ The MetaStore service extends the core KIT DM by the following features
 - Updating metadata
 - Searching for metadata via the Generic Repository Client of the KIT DM or the MetaStore REST-API
 - Publish a digital object (create a PID)
-- Providing a REST-API for the MetaStore functionality that is fully integrated with the KIT DM REST-API link:docu[Documentation of the REST-API of the MetaStore]
+- Providing a REST-API for the MetaStore functionality that is fully integrated with the KIT DM REST-API (http://ipelsdf1.lsdf.kit.edu/masi/MetaStore/swagger/[MetaStore REST-API Documentation])
 
 ==== Structure
 Metadata is extracted from a digital object during ingest. The metadata is stored in the standard http://www.loc.gov/standards/mets/[METS format] that describes all aspects of a digital object with for example the following categories:
