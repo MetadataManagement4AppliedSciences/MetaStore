@@ -1,5 +1,5 @@
-MetaStore
-=========
+MetaStore Service
+=================
 Contact <support@datamanager.kit.edu>
 :toc: left
 :toclevels: 3
@@ -23,30 +23,90 @@ If you are struggling with the terms
 please read the documentation of the http://datamanager.kit.edu/dama/manual/[KIT Data Manager] first.
 **********************************************************************
 
-== Installation of ${artifactId} 
+== MetaStore Service 
 
 .Requirements
 **********************************************************************
-. ArangoDB 3.1 or higher
 . JDK 1.8
+. Maven 1.3
 . KIT Data Manager 1.5 or higher
+. ArangoDB 3.1 or higher
 **********************************************************************
 
 === About this documentation
-This documentation gives a brief overview about the installation of
-the MetaStore as a part of a repository powered by KIT Data Manager.
-It 
+This documentation includes the MetaStore as a part of a repository powered by KIT Data Manager, its installation and configuration.
 
 
-=== Documentation of the module \'${artifactId}'
-The module \'*_${artifactId}_*' provides a REST-API to register XSD, store metadata
-available in XML format, validate XML, search for metadata, and creating a PID for
-publishing and referencing digital objects.
-In first version it extends the REST-API of KIT Data Manager. The MetaStore could 
-also be utilized as a standalone service.
 
-=== Installation
-include::arangodb.txt[]
+=== The MetaStore Service
+The MetaStore service extends the core KIT DM by the following features
+
+- Registration of XML Schema
+- Validation of XML with registered XML Schema
+- Storing metadata (METS format)
+- Updating metadata
+- Searching for metadata via the Generic Repository Client of the KIT DM or the MetaStore REST-API
+- Publish a digital object (create a PID)
+- Providing a REST-API for the MetaStore functionality that is fully integrated with the KIT DM REST-API link:docu[Documentation of the REST-API of the MetaStore]
+
+==== Structure
+Metadata is extracted from a digital object during ingest. The metadata is stored in the standard http://www.loc.gov/standards/mets/[METS format] that describes all aspects of a digital object with for example the following categories:
+
+- Base metadata
+- Content metadata
+- Structural metadata
+- Preservation metadata including provenance
+
+As the METS format necessitates XML, all metadata is transformed to it.
+
+==== Content Metadata Extraction and Validation
+As the content metadata depends on the specific data of the community, the automatic metadata extraction needs to be specified for each use case. Therefor a http://datamanager.kit.edu/dama/manual/#ChapterStagingProcessorCoding[staging processor] has to be implemented. It is advised to utilize existing staging processors and/or libraries as a basis. Generic extractors for common use cases were implemented. Following the extraction of the community specific content metadata, the metadata is stored in an XML schema that is required to be definied. Existing schemas as advised to be used. To enable the validation of such an XML schema, it has to be registered with the MetaStore. Then, during ingest of a digital object when the metadata is extracted and stored in the MetaStore, validation of the metadata is performed. If the validation fails (e.g. due to a missing XML schema or invalid content) the MetaStore rejects the metadata and, thus, the whole data ingest. 
+
+For a new use case data set, the integration workflow is as follows:
+
+1. Defining what constitutes a digital object for the data set
+2. Specifying the content metadata for the digital object and a fitting XML metadata schema
+3. Implementing the staging processor to automatically extract metadata
+4. Finding out if existing metadata schemas, staging processors and libraries can be reused 
+5. Registering the XML schema with the MetaStore
+
+The MetaStore can also be utilized as a standalone service.
+
+
+==== PID Creator
+
+ClassName :: edu.kit.masi.staging.pid.PidCreator
+
+This staging processor allows you to automatically register a PID for ingested data. The configuration of the service is done via 'datamanager.xml'. To configure the processors please also refer to http://datamanager.kit.edu/dama/manual/#ChapterStagingProcessorConfiguration[Configure Staging Processor]
+
+
+===== Configuration
+To configure it like the example above it has to look like this:
+
+====== Page 1:
+
+ACCESSIBLE BY :: community 
+PRIORITY :: 0
+
+====== General Options:
+
+Default :: ON
+Disabled :: OFF
+Ingest Supported :: ON
+Download Supported :: OFF
+
+====== Page 2:
+
+PID service :: EPIC
+
+
+
+=== Installation of ArangoDB
+An example of installing ArangoDB on an Ubuntu operating system you'll find here: https://www.arangodb.com/download-major/ubuntu/[Installing ArangoDB on Ubuntu]
+
+In the last step you have to provide a password for the database. Please note this password. If no additional user will be created you may access the database via username 'root' and the provided password.
+
+
 
 === Installation MetaStore
 1. Install ${artifactId} module as part of KIT Data Manager.

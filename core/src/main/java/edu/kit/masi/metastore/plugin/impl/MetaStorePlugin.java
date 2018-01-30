@@ -50,7 +50,7 @@ public class MetaStorePlugin extends AbstractServicePlugin implements IMetaStore
 
   @Override
   public String getMetsDocument(String pDigitalObjectId, ReturnType returnType) throws MetaStoreException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return new MetaStoreController().getMetsDocument(pDigitalObjectId, returnType);
   }
 
   @Override
