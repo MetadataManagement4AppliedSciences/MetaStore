@@ -44,7 +44,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 /**
- *
+ * Plugin implementing search queries for elasticsearch.
  * @author hartmann-v
  */
 public class ElasticsearchServicePlugin extends AbstractServicePlugin implements ISearchPlugin {
@@ -148,7 +148,7 @@ public class ElasticsearchServicePlugin extends AbstractServicePlugin implements
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Search for metadata: " + pCombination + ", Indices: " + String.join(", ", indices) + ", Types: " + String.join(", ", types) + ", Terms: " + String.join(", ", pValues));
     }
-    
+
     Client client = getTransportClient(host, port, cluster);
     BoolQueryBuilder query2 = QueryBuilders.boolQuery();
     int minimumNumber = 1;
@@ -157,7 +157,13 @@ public class ElasticsearchServicePlugin extends AbstractServicePlugin implements
     }
     query2.minimumNumberShouldMatch(minimumNumber);
     for (String term : pValues) {
-      query2.should(QueryBuilders.matchQuery("_all", term));
+      term = term.toLowerCase();
+      if (term.contains("*")) {
+        LOGGER.info("Search for regexp: '{}'", term);
+        query2.should(QueryBuilders.regexpQuery("_all", term));
+      } else {
+        query2.should(QueryBuilders.matchQuery("_all", term));
+      }
     }
 //    return search(types, query2.toString());
     SearchRequestBuilder prepareSearch = client.prepareSearch(indices);
@@ -226,17 +232,14 @@ public class ElasticsearchServicePlugin extends AbstractServicePlugin implements
     elasticsearchServicePlugin.host = "localhost";
     elasticsearchServicePlugin.port = 9300;
     elasticsearchServicePlugin.cluster = "kitdatamanager";
-    
-    
-    
-    
+
 //    String[] searchForMets = elasticsearchServicePlugin.searchForMets(Combination.CONJUNCTION, new String[]{"ein", "zwei"});
-int index = 0;
-for (String arg : args) {
-  
-  System.out.println(index++ + " - " + arg);
-}
-String[] searchForMets = elasticsearchServicePlugin.search(null, args[0]);
+    int index = 0;
+    for (String arg : args) {
+
+      System.out.println(index++ + " - " + arg);
+    }
+    String[] searchForMets = elasticsearchServicePlugin.search(null, args[0]);
     printResult(searchForMets);
 
 //    for (ISearchPlugin plugin : ServiceLoader.load(ISearchPlugin.class)) {
