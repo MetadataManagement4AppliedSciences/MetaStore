@@ -45,6 +45,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 /**
  * Plugin implementing search queries for elasticsearch.
+ *
  * @author hartmann-v
  */
 public class ElasticsearchServicePlugin extends AbstractServicePlugin implements ISearchPlugin {
@@ -145,6 +146,7 @@ public class ElasticsearchServicePlugin extends AbstractServicePlugin implements
    * @return IDs of all fitting documents.
    */
   public String[] searchForMets(Combination pCombination, String[] indices, String[] types, String[] pValues) {
+    boolean validSearchTerm = false;
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Search for metadata: " + pCombination + ", Indices: " + String.join(", ", indices) + ", Types: " + String.join(", ", types) + ", Terms: " + String.join(", ", pValues));
     }
@@ -158,29 +160,58 @@ public class ElasticsearchServicePlugin extends AbstractServicePlugin implements
     query2.minimumNumberShouldMatch(minimumNumber);
     for (String term : pValues) {
       term = term.toLowerCase();
-      if (term.contains("*")) {
-        LOGGER.info("Search for regexp: '{}'", term);
-        query2.should(QueryBuilders.regexpQuery("_all", term));
-      } else {
-        query2.should(QueryBuilders.matchQuery("_all", term));
+      for (String value : term.split("[^a-z0-9äöüß]+")) {
+        if (value.length() > 2) {
+          LOGGER.info("Search for regexp: '.*{}.*'", value);
+          query2.should(QueryBuilders.regexpQuery("_all", ".*" + value + ".*"));
+          validSearchTerm = true;
+        } else {
+          LOGGER.info("Term '{}' is to short: term skipped!", value);
+        }
       }
     }
 //    return search(types, query2.toString());
-    SearchRequestBuilder prepareSearch = client.prepareSearch(indices);
-    SearchResponse searchResponse = prepareSearch.setSearchType(SearchType.DEFAULT).setQuery(query2).execute().actionGet();
     Set<String> results = new HashSet<>();
-    LOGGER.debug("Estimated number of results: '{}'!", searchResponse.getHits().getTotalHits());
-    for (SearchHit hit : searchResponse.getHits().getHits()) {
-      Map<String, Object> source = hit.getSource();
-      String digitalObjectId = hit.getId().split("_", 2)[0];
-      results.add(digitalObjectId);
-      LOGGER.debug("Found DigitalObject with id: " + digitalObjectId);
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("ID: " + hit.id());
-        for (String key : source.keySet()) {
-          LOGGER.trace(key + ": " + source.get(key));
+    if (validSearchTerm) {
+      SearchRequestBuilder prepareSearch = client.prepareSearch(indices);
+      SearchResponse searchResponse;
+      int pageIndex = 0;
+      int pageSize = 1000;
+      long maxNumberOfHits = 10000;
+      long maxNumberOfReturnedHits = 10000;
+      long totalNumberOfHits;
+      // Add pagination as the number of results is limited to 10 by default and
+      // the maximum number is limited to 1000.
+      do {
+        searchResponse = prepareSearch.setSearchType(SearchType.DEFAULT).setQuery(query2).setSize(pageSize).setFrom(pageIndex * pageSize).execute().actionGet();
+        totalNumberOfHits = searchResponse.getHits().getTotalHits();
+        if (totalNumberOfHits > maxNumberOfHits) {
+          LOGGER.warn("Number of results is cut from  '{}' to '{}'!", totalNumberOfHits, maxNumberOfHits);
+          totalNumberOfHits = maxNumberOfHits;
         }
-      }
+        LOGGER.debug("Estimated number of results: '{}' [Retrieve index {} - {}]!", totalNumberOfHits, pageIndex * pageSize, (pageIndex + 1) * pageSize);
+        pageIndex++;
+        for (SearchHit hit : searchResponse.getHits().getHits()) {
+          String elasticSearchId = hit.id();
+          String[] partsOfId;
+          partsOfId = elasticSearchId.split("_", 2);
+          results.add(partsOfId[0]);
+          if (results.size() >= maxNumberOfReturnedHits) {
+            break;
+          }
+          LOGGER.debug("Found DigitalObject with id: '{}' in index '{}'", partsOfId[0], partsOfId[1]);
+          if (LOGGER.isTraceEnabled()) {
+            Map<String, Object> source = hit.getSource();
+            LOGGER.trace("ID: " + hit.id());
+            for (String key : source.keySet()) {
+              LOGGER.trace(key + ": " + source.get(key));
+            }
+          }
+        }
+          if (results.size() >= maxNumberOfReturnedHits) {
+            break;
+          }
+       } while (totalNumberOfHits > pageIndex * pageSize);
     }
     LOGGER.debug("Found '{}' results!", results.size());
     return results.toArray(new String[results.size()]);
