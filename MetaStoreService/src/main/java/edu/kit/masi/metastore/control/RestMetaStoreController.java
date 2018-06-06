@@ -312,10 +312,11 @@ public class RestMetaStoreController {
    * @param pPrefixes All provided prefixes.
    * @param pSearchTerms search terms.
    * @param maxNoOfHits maximum number of hits.
+   * @param pShort Return only Digital object IDs instead of document.
    * @return All fitting mets documents as JSON array.
    * @throws MetaStoreException An error occurred.
    */
-  public String searchForMetsDocuments(HttpContext pContext, String pGroupId, List<String> pIndexes, List<String> pPrefixes, List<String> pSearchTerms, int maxNoOfHits) throws MetaStoreException {
+  public String searchForMetsDocuments(HttpContext pContext, String pGroupId, List<String> pIndexes, List<String> pPrefixes, List<String> pSearchTerms, int maxNoOfHits, boolean pShort) throws MetaStoreException {
     IAuthorizationContext authorizationContext = SecurityHelper.checkForAuthorization(pContext, pGroupId, Role.GUEST);
 
     StringBuilder returnValue = new StringBuilder();
@@ -327,7 +328,7 @@ public class RestMetaStoreController {
     } else {
       String[] allTerms = pSearchTerms.toArray(new String[pSearchTerms.size()]);
       String[] types = pPrefixes.toArray(new String[pPrefixes.size()]);
-      String[] searchResults = searchPlugin.searchForMets(ISearchPlugin.Combination.DISJUNCTION, types, allTerms);
+      String[] searchResults = searchPlugin.searchForMets(ISearchPlugin.Combination.CONJUNCTION, types, allTerms);
       allDigitalObjectIds = new HashSet<>(Arrays.asList(searchResults));
     }
     LOGGER.debug("Found {} hits", allDigitalObjectIds.size());
@@ -344,7 +345,13 @@ public class RestMetaStoreController {
             // JSONObject jsonObject =
             // arango.getJsonObject(MetaStoreUtility.getHashValue(digitalObjectIds));
             // returnValue.put(jsonObject);
-            JSONObject item = new JSONObject(metsUtility.getMetsDocument(digitalObjectIds, returnType));
+            JSONObject item;
+            if (pShort) {
+              item = new JSONObject();
+              item.put("digitalObjectId", digitalObjectIds);
+            } else {
+              item = new JSONObject(metsUtility.getMetsDocument(digitalObjectIds, returnType));
+            }
             LOGGER.debug("Add document #{} of {}!", noOfDocuments, maxNoOfHits);
             array.put(item);
             noOfDocuments++;
@@ -356,9 +363,13 @@ public class RestMetaStoreController {
         } else {
           returnValue.append("<array>\n");
           for (String digitalObjectIds : allDigitalObjectIds) {
+            if (pShort) {
+             returnValue.append(String.format("<digitalObjectId>%s</digitalObjectId>", digitalObjectIds));
+            } else {
             returnValue.append(
                     metaStoreController.getMetsDocument(digitalObjectIds, returnType)
                             .replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "") + "\n");
+            }
             noOfDocuments++;
             if (noOfDocuments > maxNoOfHits) {
               break;

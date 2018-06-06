@@ -62,6 +62,7 @@ public class SearchService extends BaseService {
    * supported yet)
    * @param pGroupId The group id the search belongs to [default: WORLD]
    * @param pMaxNoOfHits Maximum number of hits.
+   * @param pShortList Show only Digital Object Identifiers.
    * @return Response holding status and array of found METS documents.
    */
   @GET
@@ -81,9 +82,10 @@ public class SearchService extends BaseService {
           @ApiParam(value = "Search term(s)", allowMultiple = true, required = true) @QueryParam("term") List<String> pSearchTerms,
           @ApiParam(value = "Which indices should be searched (linked with groupIds). (Not supported yet!)", allowMultiple = true, required = false, defaultValue = "_all") @QueryParam("index") List<String> pIndexes,
           @ApiParam(value = "Which types should be searched (linked with metadata schema). (Not supported yet!)", allowMultiple = true, required = false, defaultValue = "_all") @QueryParam("type") List<String> pTypes,
-          @ApiParam(value = "Maximum number of hits.", required = false, defaultValue = "20") @QueryParam("size") int pMaxNoOfHits) {
+          @ApiParam(value = "Maximum number of hits.", required = false, defaultValue = "20") @QueryParam("size") int pMaxNoOfHits,
+          @ApiParam(value = "Short - Show only Digital Object IDs.", required = false, defaultValue = "false") @QueryParam("short") boolean pShort) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("getSearchResult: groupID = {} & searchTerms = {} & indexes = {} & types = {} & maxNoOfHits = {}", pGroupId, pSearchTerms, pIndexes, pTypes, pMaxNoOfHits);
+      LOGGER.trace("getSearchResult: groupID = {} & searchTerms = {} & indexes = {} & types = {} & maxNoOfHits = {} & short = {}", pGroupId, pSearchTerms, pIndexes, pTypes, pMaxNoOfHits, pShort);
     }
 
     Response.Status statusCode = Response.Status.OK;
@@ -97,7 +99,7 @@ public class SearchService extends BaseService {
     }
     try {
       RestMetaStoreController msc = new RestMetaStoreController();
-      jsonString = msc.searchForMetsDocuments(context, pGroupId, pIndexes, pTypes, pSearchTerms, pMaxNoOfHits);
+      jsonString = msc.searchForMetsDocuments(context, pGroupId, pIndexes, pTypes, pSearchTerms, pMaxNoOfHits, pShort);
 
     } catch (MetaStoreException ex) {
       LOGGER.error("Error while searching.", ex);
