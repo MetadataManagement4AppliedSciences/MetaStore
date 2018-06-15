@@ -63,7 +63,7 @@ public class MetaStoreController implements IMetaStoreController {
   /**
    * Connection to database.
    */
-  private final ArangoDB arango = new ArangoDB();
+  private static final ArangoDB arango = new ArangoDB();
   /**
    * Utilities handling METS file.
    */
@@ -73,6 +73,10 @@ public class MetaStoreController implements IMetaStoreController {
    * Default constructor.
    */
   public MetaStoreController() {
+  }
+  
+  public static final ArangoDB getArangoDb() {
+    return arango;
   }
 
   @Override

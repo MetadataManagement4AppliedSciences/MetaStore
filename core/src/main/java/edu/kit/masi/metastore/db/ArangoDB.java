@@ -50,20 +50,21 @@ public class ArangoDB {
    */
   private static final Logger LOGGER = LoggerFactory.getLogger(ArangoDB.class);
 
-  /** Attribute names for storing attributes. 
-   * Type: Namespace of the XML
+  /**
+   * Attribute names for storing attributes. Type: Namespace of the XML
    */
   private static final String TYPE_ATTRIBUTE = "type";
-  /** Attribute names for storing attributes. 
-   * Prefix: prefix used for this namespace (should be unique)
+  /**
+   * Attribute names for storing attributes. Prefix: prefix used for this
+   * namespace (should be unique)
    */
   private static final String PREFIX_ATTRIBUTE = "prefix";
-  /** Attribute names for storing attributes. 
-   * XSD: Schema 
+  /**
+   * Attribute names for storing attributes. XSD: Schema
    */
   private static final String XSD_ATTRIBUTE = "xsd";
-  /** Attribute names for storing attributes. 
-   * XML: XML
+  /**
+   * Attribute names for storing attributes. XML: XML
    */
   private static final String XML_ATTRIBUTE = "xml";
   /**
@@ -126,9 +127,10 @@ public class ArangoDB {
 
   /**
    * Register XSD
+   *
    * @param hashedKey hashed key
    * @param xsdString string containing xsd
-   * @param type target namespace of the xsd 
+   * @param type target namespace of the xsd
    * @param prefix prefix of the given namespace (should be unique)
    * @return Message
    * @throws MetaStoreException If something went wrong.
@@ -140,7 +142,9 @@ public class ArangoDB {
     xmlForArango.addAttribute(XSD_ATTRIBUTE, xsdString);
     xmlForArango.setDocumentKey(hashedKey);
     try {
-      driver.createDocument(collectionName, xmlForArango);
+      synchronized (driver) {
+        driver.createDocument(collectionName, xmlForArango);
+      }
     } catch (ArangoException e) {
       if (e.getMessage().equals("[1210] cannot create document, unique constraint violated")) {
         throw new MetaStoreException(e, StatusCode.CONFLICT.getStatusCode()); // conflict
@@ -153,14 +157,17 @@ public class ArangoDB {
 
   /**
    * Get xsd
+   *
    * @param hashValue hashed value
    * @return Message
    * @throws MetaStoreException
    */
   public String getRegisteredXsd(String hashValue) throws MetaStoreException {
     try {
-      return driver.getDocument(collectionName + "/" + hashValue, BaseDocument.class).getEntity()
-              .getAttribute(XSD_ATTRIBUTE).toString();
+      synchronized (driver) {
+        return driver.getDocument(collectionName + "/" + hashValue, BaseDocument.class).getEntity()
+                .getAttribute(XSD_ATTRIBUTE).toString();
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException("No XSD registered for hash '" + hashValue + "'", e);
     }
@@ -168,14 +175,17 @@ public class ArangoDB {
 
   /**
    * Get namespace of xsd
+   *
    * @param hashValue hashed value
    * @return message
    * @throws MetaStoreException If something went wrong.
    */
   public String getRegisteredXsdType(String hashValue) throws MetaStoreException {
     try {
-      return driver.getDocument(collectionName + "/" + hashValue, BaseDocument.class).getEntity()
-              .getAttribute(TYPE_ATTRIBUTE).toString();
+      synchronized (driver) {
+        return driver.getDocument(collectionName + "/" + hashValue, BaseDocument.class).getEntity()
+                .getAttribute(TYPE_ATTRIBUTE).toString();
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException("No type for XSD registered for hash '" + hashValue + "'", e);
     }
@@ -183,14 +193,17 @@ public class ArangoDB {
 
   /**
    * Get prefix of xsd. Prefix should be unique.
+   *
    * @param hashValue hashed value
    * @return message
    * @throws MetaStoreException If something went wrong.
    */
   public String getRegisteredXsdPrefix(String hashValue) throws MetaStoreException {
     try {
-      return driver.getDocument(collectionName + "/" + hashValue, BaseDocument.class).getEntity()
-              .getAttribute(PREFIX_ATTRIBUTE).toString();
+      synchronized (driver) {
+        return driver.getDocument(collectionName + "/" + hashValue, BaseDocument.class).getEntity()
+                .getAttribute(PREFIX_ATTRIBUTE).toString();
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException("No prefix of XSD registered for hash '" + hashValue + "'", e);
     }
@@ -212,7 +225,9 @@ public class ArangoDB {
     xmlForArango.setDocumentKey(hashedKey);
     String returnMsg;
     try {
-      driver.createDocument(collectionName, xmlForArango);
+      synchronized (driver) {
+        driver.createDocument(collectionName, xmlForArango);
+      }
       returnMsg = "Successfully Registered.";
     } catch (ArangoException e) {
       if (e.getMessage().equals("[1210] cannot create document, unique constraint violated")) {
@@ -226,29 +241,34 @@ public class ArangoDB {
 
   /**
    * Store raw json
+   *
    * @param hashedKey hashed key
    * @param finalString json as string
    * @throws MetaStoreException If something went wrong.
    */
   public void storeJSONRawDocument(String hashedKey, String finalString) throws MetaStoreException {
     try {
-      driver.updateDocumentRaw(collectionName + "/" + hashedKey, finalString, null, false, null);
+      synchronized (driver) {
+        driver.updateDocumentRaw(collectionName + "/" + hashedKey, finalString, null, false, null);
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e);
     }
-
   }
 
   /**
    * Get json object
+   *
    * @param hashedKey hashed key
    * @return JSON object
    * @throws MetaStoreException If something went wrong.
    */
   public JSONObject getJsonObject(String hashedKey) throws MetaStoreException {
     try {
-
-      String fetchData1 = driver.getDocumentRaw(collectionName + "/" + hashedKey, null, null);
+      String fetchData1;
+      synchronized (driver) {
+        fetchData1 = driver.getDocumentRaw(collectionName + "/" + hashedKey, null, null);
+      }
       return new JSONObject(fetchData1).getJSONObject("json");
 
     } catch (ArangoException | JSONException e) {
@@ -260,12 +280,15 @@ public class ArangoDB {
 
   /**
    * Apply indexes.
+   *
    * @param indexSet Set of indexes.
    */
   public void applyIndexes(Set<String> indexSet) {
     for (String indSet : indexSet) {
       try {
-        driver.createFulltextIndex(collectionName, indSet);
+        synchronized (driver) {
+          driver.createFulltextIndex(collectionName, indSet);
+        }
       } catch (ArangoException e) {
         LOGGER.error("Error while creating index for '" + indSet + "'!", e);
       }
@@ -274,6 +297,7 @@ public class ArangoDB {
 
   /**
    * Get collection name.
+   *
    * @return collection name.
    */
   public String getCollectionName() {
@@ -282,6 +306,7 @@ public class ArangoDB {
 
   /**
    * Store XML document.
+   *
    * @param metsPOJO Plain old java object representing METS file.
    * @return Message
    * @throws MetaStoreException If something went wrong
@@ -289,7 +314,9 @@ public class ArangoDB {
   public String storeXmlDocument(MetsArangoPOJO metsPOJO) throws MetaStoreException {
     DocumentEntity<MetsArangoPOJO> entity = null;
     try {
-      entity = driver.createDocument(collectionName, metsPOJO);
+      synchronized (driver) {
+        entity = driver.createDocument(collectionName, metsPOJO);
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e);
     }
@@ -298,12 +325,15 @@ public class ArangoDB {
 
   /**
    * Get indexes.
+   *
    * @return entities with indexes
    * @throws MetaStoreException If something went wrong
    */
   public IndexesEntity getIndexes() throws MetaStoreException {
     try {
-      return driver.getIndexes(collectionName);
+      synchronized (driver) {
+        return driver.getIndexes(collectionName);
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e);
     }
@@ -311,15 +341,18 @@ public class ArangoDB {
 
   /**
    * Apply full text search.
-   * @param indexEntity entity 
+   *
+   * @param indexEntity entity
    * @param text search term
    * @return Set of documents.
    * @throws MetaStoreException If something went wrong
    */
   public DocumentCursor<ArangoDriver> applyFullTextSearch(String indexEntity, String text) throws MetaStoreException {
     try {
-      return driver.executeSimpleFulltextWithDocuments(collectionName, indexEntity, "prefix:" + text, 0, 0, null,
-              null);
+      synchronized (driver) {
+        return driver.executeSimpleFulltextWithDocuments(collectionName, indexEntity, "prefix:" + text, 0, 0, null,
+                null);
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e);
     }
@@ -327,14 +360,17 @@ public class ArangoDB {
 
   /**
    * Get XML document
+   *
    * @param hashedValue hashed value.
    * @return XML document
    * @throws MetaStoreException If something went wrong
    */
   public String getXMLData(String hashedValue) throws MetaStoreException {
     try {
-      return driver.getDocument(collectionName + "/" + hashedValue, BaseDocument.class).getEntity()
-              .getAttribute(XML_ATTRIBUTE).toString();
+      synchronized (driver) {
+        return driver.getDocument(collectionName + "/" + hashedValue, BaseDocument.class).getEntity()
+                .getAttribute(XML_ATTRIBUTE).toString();
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e);
     }
@@ -342,8 +378,9 @@ public class ArangoDB {
 
   /**
    * Get all child documents
+   *
    * @param pUniqueId hashed value of document
-   * @return Set with all documents. 
+   * @return Set with all documents.
    * @throws MetaStoreException If something went wrong
    */
   public DocumentCursor<BaseDocument> getAllChildDocuments(String pUniqueId) throws MetaStoreException {
@@ -353,7 +390,9 @@ public class ArangoDB {
     Map<String, Object> bindingVals = new HashMap<>();
     bindingVals.put("mainXmlHandler", pUniqueId);
     try {
-      return driver.executeDocumentQuery(allIDDocQuery, bindingVals, null, BaseDocument.class);
+      synchronized (driver) {
+        return driver.executeDocumentQuery(allIDDocQuery, bindingVals, null, BaseDocument.class);
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e);
     }
@@ -361,6 +400,7 @@ public class ArangoDB {
 
   /**
    * Get content metadata
+   *
    * @param uniqueID hashed value of document.
    * @param nameSpace namespace of document.
    * @return Set with all documents.
@@ -375,7 +415,9 @@ public class ArangoDB {
     bindingVals.put("mainXmlHandler", uniqueID);
     bindingVals.put("type", nameSpace);
     try {
-      return driver.executeDocumentQuery(allIDDocQuery, bindingVals, null, BaseDocument.class);
+      synchronized (driver) {
+        return driver.executeDocumentQuery(allIDDocQuery, bindingVals, null, BaseDocument.class);
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e);
     }
@@ -405,19 +447,20 @@ public class ArangoDB {
 	 * MetaStoreException("Error while storing data!", e); } return
 	 * "Successfully stored the json and XmlData"; }
    */
-
   /**
    * Get digtial object ID of document.
+   *
    * @param hashedKey hashed value.
    * @return digital object id.
    * @throws MetaStoreException If something went wrong
    */
-
   public String getDigitalObjectIdForDocument(String hashedKey) throws MetaStoreException {
     String digitalObjectId;
     try {
-
-      String fetchData1 = driver.getDocumentRaw(collectionName + "/" + hashedKey, null, null);
+      String fetchData1;
+      synchronized (driver) {
+        fetchData1 = driver.getDocumentRaw(collectionName + "/" + hashedKey, null, null);
+      }
       digitalObjectId = new JSONObject(fetchData1).getString("mainXmlHandler").toString();
     } catch (Exception e) {
       LOGGER.error("Excepiton :" + e.getMessage());
@@ -428,6 +471,7 @@ public class ArangoDB {
 
   /**
    * Get section document key.
+   *
    * @param nameSpace namespace
    * @param pDigitalObjectId id of document
    * @param pSectionId id of section
@@ -449,7 +493,9 @@ public class ArangoDB {
     allIDDocQuery.append(" return doc");
 
     try {
-      return driver.executeDocumentQuery(allIDDocQuery.toString(), bindingVals, null, BaseDocument.class);
+      synchronized (driver) {
+        return driver.executeDocumentQuery(allIDDocQuery.toString(), bindingVals, null, BaseDocument.class);
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e);
     }
@@ -479,7 +525,9 @@ public class ArangoDB {
     bindingVals.put("xmlData", pSectionDocument);
     bindingVals.put("json", "");
     try {
-      driver.executeDocumentQuery(updateQuery, bindingVals, null, BaseDocument.class);
+      synchronized (driver) {
+        driver.executeDocumentQuery(updateQuery, bindingVals, null, BaseDocument.class);
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR.getStatusCode());
     }
@@ -489,8 +537,10 @@ public class ArangoDB {
     bindingVals2.put("mainXmlHandler", collectionName + "/" + documentToUpdateKey);
     bindingVals2.put("arrayData", arrayData);
     try {
-      driver.updateDocumentRaw(collectionName + "/" + documentToUpdateKey, finalStr, null, false, null);
-      driver.executeAqlQuery(updateArray, bindingVals2, null, BaseDocument.class);
+      synchronized (driver) {
+        driver.updateDocumentRaw(collectionName + "/" + documentToUpdateKey, finalStr, null, false, null);
+        driver.executeAqlQuery(updateArray, bindingVals2, null, BaseDocument.class);
+      }
     } catch (ArangoException e) {
       throw new MetaStoreException(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR.getStatusCode());
     }
