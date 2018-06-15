@@ -184,9 +184,10 @@ public class MetaStoreUtility {
       metsPojo.setXmlData(xmlDocument);
       String arangoDocumentHandler = pArango.storeXmlDocument(metsPojo);
       // 2. Step is to update the above document in raw document format as arango allows in this way to store JSON data.
+      String jsonStringOrig = XML.toJSONObject(xmlDocument).toString();
       xmlDocument = transformXml(xmlDocument, prefix);
       String jsonString = XML.toJSONObject(xmlDocument).toString();
-      String finalStr = "{\"type\":\"" + pSectionDoc.getType() + "\",\"json\":" + jsonString
+      String finalStr = "{\"type\":\"" + pSectionDoc.getType() + "\",\"json\":" + jsonStringOrig
               + ",\"mainXmlHandler\":\"" + pSectionDoc.getDigitalObjectId() + "\"}";
       pArango.storeJSONRawDocument(arangoDocumentHandler, finalStr);
 
