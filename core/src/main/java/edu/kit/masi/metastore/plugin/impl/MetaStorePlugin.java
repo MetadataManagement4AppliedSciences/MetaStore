@@ -70,7 +70,7 @@ public class MetaStorePlugin extends AbstractServicePlugin implements IMetaStore
 
   @Override
   public String updatePartialMetsDocument(String pSectionDocument, String pDigitalObjectId, String pSectionId) throws MetaStoreException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return new MetaStoreController().updatePartialMetsDocument(pSectionDocument, pDigitalObjectId, pSectionId);
   }
 
   @Override
