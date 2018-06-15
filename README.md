@@ -1,10 +1,14 @@
 # MetaStore Service
 
-The MetaStore Service is a web service that provides a REST-API to register XSD, store metadata
-available in XML format, validate XML, search for metadata, and creating a PID for
-publishing and referencing digital objects.
-In first version it extends the REST-API of KIT Data Manager. The MetaStore could 
-also be utilized as a standalone service.
+The MetaStore service extends the core KIT DM by the following features
+
+* Registration of XML Schema
+* Validation of XML with registered XML Schema
+* Storing metadata (METS format)
+* Updating metadata
+* Searching for metadata via the Generic Repository Client of the KIT DM or the MetaStore REST-API
+* Publish a digital object (create a PID)
+* Providing a REST-API for the MetaStore functionality that is fully integrated with the KIT DM REST-API
 
 ## How to build
 

@@ -29,8 +29,9 @@
     <dependencySet>
       <outputDirectory>KITDM/WEB-INF/lib/${libFolder}</outputDirectory>
       <includes>
-        <include>com.google.code.findbugs:annotations</include>
         <include>com.arangodb:arangodb-java-driver</include>
+        <include>com.github.ben-manes.caffeine:caffeine</include>
+        <include>com.google.code.findbugs:annotations</include>
         <include>com.google.code.gson:gson</include>
         <include>com.google.guava:guava</include>
         <include>org.javassist:javassist</include>

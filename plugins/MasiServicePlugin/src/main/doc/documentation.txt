@@ -15,7 +15,7 @@ Contact <support@datamanager.kit.edu>
 
 .Requirements
 **********************************************************************
-At least a JDK 1.6 and maven 1.3 or higher has to be installed.
+At least a JDK 1.8 and maven 1.3 or higher has to be installed.
 **********************************************************************
 
 == About this documentation

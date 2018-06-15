@@ -34,18 +34,24 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class containing methods useful for authorization.
+ *
  * @author hartmann-v
  */
 public class SecurityHelper {
-  /** String for identifying securable resources. */
+
+  /**
+   * String for identifying securable resources.
+   */
   private static final String DOMAIN = DigitalObject.class.getCanonicalName();
-  /** Logger for logging output. */
+  /**
+   * Logger for logging output.
+   */
   private static final Logger LOGGER = LoggerFactory.getLogger(SecurityHelper.class);
 
-  /** 
-   * Method used to test if oAuth credentials are accessible.
-   * For productive use use RestUtils.authorize(HttpContext hc, GroupId pGroupId)
-   * instead.
+  /**
+   * Method used to test if oAuth credentials are accessible. For productive use
+   * use RestUtils.authorize(HttpContext hc, GroupId pGroupId) instead.
+   *
    * @param hc context of REST call.
    * @return String containing key and token.
    */
@@ -55,12 +61,12 @@ public class SecurityHelper {
     // get incoming OAuth parameters
     OAuthParameters params = new OAuthParameters();
     params.readRequest(request);
- 
+
     LOGGER.debug("Obtaining consumer credentials.");
     //obtain consumer key and secret
     String consumerKey = params.getConsumerKey();
     String token = params.getToken();
-    
+
     return consumerKey + " --> " + token;
   }
 
@@ -89,21 +95,38 @@ public class SecurityHelper {
    *
    * @param pAuthContext Context of user who wants to read the resources.
    * @param pRoleRequired Minimum role required for the access.
-   * @param pResourceIds Collection holding all ids. 'Forbidden' ids are filtered out
-   * at the end.
+   * @param pResourceIds Collection holding all ids. 'Forbidden' ids are
+   * filtered out at the end.
    */
-  public static void filter (IAuthorizationContext pAuthContext,
+  public static void filter(IAuthorizationContext pAuthContext,
           Role pRoleRequired,
           Collection<String> pResourceIds) {
     Collection<SecurableResourceId> allResources = new ArrayList<>();
+    Collection<String> filteredResoures = new ArrayList<>();
     for (String resourceId : pResourceIds) {
       allResources.add(new SecurableResourceId(DOMAIN, resourceId));
-    }    
-    Collection<SecurableResourceId> result = new ArrayList<>();
-    PlainAuthorizerLocal.filterOnAccessAllowed(pAuthContext, pRoleRequired, allResources, result);
+      // Split filter in smaller parts!
+      if (allResources.size() >= 1000) {
+        Collection<SecurableResourceId> result = new ArrayList<>();
+        PlainAuthorizerLocal.filterOnAccessAllowed(pAuthContext, pRoleRequired, allResources, result);
+        for (SecurableResourceId resourceIdFiltered : result) {
+          filteredResoures.add(resourceIdFiltered.getDomainUniqueId());
+        }
+        allResources.clear();
+
+      }
+    }
+    if (!allResources.isEmpty()) {
+      Collection<SecurableResourceId> result = new ArrayList<>();
+      PlainAuthorizerLocal.filterOnAccessAllowed(pAuthContext, pRoleRequired, allResources, result);
+      for (SecurableResourceId resourceIdFiltered : result) {
+        filteredResoures.add(resourceIdFiltered.getDomainUniqueId());
+      }
+
+    }
     pResourceIds.clear();
-    for (SecurableResourceId resourceId : result) {
-      pResourceIds.add(resourceId.getDomainUniqueId());
-    }    
+    for (String resourceIdString : filteredResoures) {
+      pResourceIds.add(resourceIdString);
+    }
   }
 }
