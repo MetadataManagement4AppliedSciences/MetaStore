@@ -153,16 +153,15 @@ public class ElasticsearchServicePlugin extends AbstractServicePlugin implements
 
     Client client = getTransportClient(host, port, cluster);
     BoolQueryBuilder query2 = QueryBuilders.boolQuery();
-    int minimumNumber = 1;
-    if (pCombination == Combination.CONJUNCTION) {
-      minimumNumber = pValues.length;
-    }
-    query2.minimumNumberShouldMatch(minimumNumber);
+    int minimumNumber = 0;
     for (String term : pValues) {
       term = term.toLowerCase();
       for (String value : term.split("[^a-z0-9äöüß]+")) {
         if (value.length() > 2) {
           LOGGER.info("Search for regexp: '.*{}.*'", value);
+          if (pCombination == Combination.CONJUNCTION) {
+            minimumNumber++;
+          }
           query2.should(QueryBuilders.regexpQuery("_all", ".*" + value + ".*"));
           validSearchTerm = true;
         } else {
@@ -170,6 +169,10 @@ public class ElasticsearchServicePlugin extends AbstractServicePlugin implements
         }
       }
     }
+    if (pCombination == Combination.DISJUNCTION) {
+      minimumNumber = 1;
+    }
+    query2.minimumNumberShouldMatch(minimumNumber);
 //    return search(types, query2.toString());
     Set<String> results = new HashSet<>();
     if (validSearchTerm) {
@@ -208,10 +211,10 @@ public class ElasticsearchServicePlugin extends AbstractServicePlugin implements
             }
           }
         }
-          if (results.size() >= maxNumberOfReturnedHits) {
-            break;
-          }
-       } while (totalNumberOfHits > pageIndex * pageSize);
+        if (results.size() >= maxNumberOfReturnedHits) {
+          break;
+        }
+      } while (totalNumberOfHits > pageIndex * pageSize);
     }
     LOGGER.debug("Found '{}' results!", results.size());
     return results.toArray(new String[results.size()]);
