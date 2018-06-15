@@ -55,7 +55,7 @@ public class RestMetaStoreController {
   /**
    * Connection to database.
    */
-  private final ArangoDB arango = new ArangoDB();
+  private final ArangoDB arango = MetaStoreController.getArangoDb();
   /**
    * Utilities handling METS file.
    */
