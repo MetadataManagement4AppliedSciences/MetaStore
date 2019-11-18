@@ -19,6 +19,9 @@ rm -rf *
 wget https://github.com/kit-data-manager/base/archive/KITDM_$KIT_DM_VERSION.zip
 unzip KITDM_$KIT_DM_VERSION.zip
 
+# Copy dependency of Tools 1.5 to lib 1.6
+cp -r $METASTORE_BASE/lib/org/fzk/ipe/Tools/1.5  base-KITDM_$KIT_DM_VERSION/libs/org/fzk/ipe/Tools/
+
 # Change dependency of grid-util from Tools 1.5 to Tools 1.6
 cp $METASTORE_BASE/lib/org/fzk/ipe/grid-util/2.1/grid-util-2.1.pom  base-KITDM_$KIT_DM_VERSION/libs/org/fzk/ipe/grid-util/2.1/grid-util-2.1.pom
 
