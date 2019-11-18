@@ -19,6 +19,9 @@ rm -rf *
 wget https://github.com/kit-data-manager/base/archive/KITDM_$KIT_DM_VERSION.zip
 unzip KITDM_$KIT_DM_VERSION.zip
 
+# Change dependency of grid-util from Tools 1.5 to Tools 1.6
+cp $METASTORE_BASE/lib/org/fzk/ipe/grid-util/2.1/grid-util-2.1.pom  base-KITDM_$KIT_DM_VERSION/libs/org/fzk/ipe/grid-util/2.1/grid-util-2.1.pom
+
 # Build libraries needed for MetaStore
 cd base-KITDM_$KIT_DM_VERSION
 mvn $MAVEN_OPTS clean install -P Release,generate-doc,test
